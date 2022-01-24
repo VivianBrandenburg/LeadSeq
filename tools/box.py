@@ -136,7 +136,7 @@ def read_UTR_file(UTR_file):
     with open(UTR_file, 'r') as inf:
         for line in inf:
             tab = line.replace('\n', '').split('\t')
-            name, UTR_start, UTR_stop= tab[0].replace('YPK_TSS','TSS'), int(tab[4]), int(tab[5])
+            name, UTR_start, UTR_stop= tab[0], int(tab[4]), int(tab[5])
             dic = {'name': name,  'UTR_start':UTR_start, 'UTR_stop':UTR_stop, 'strand':tab[1]}
             length_UTR = UTR_stop - UTR_start +1
             if length_UTR > 14:    
