@@ -24,7 +24,7 @@ genome = read_fna(args.genome_file, True) if mode =='seq' else read_scores(args.
 gff = read_gff(args.gff_file)
 
 # split into transcriptome
-transcriptome = genome2transcript(genome, gff, args.f, args.n)
+transcriptome = genome2transcript(genome, gff, args.feature, args.name)
 
 
 # write outfile
