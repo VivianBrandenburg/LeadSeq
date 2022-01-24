@@ -18,4 +18,9 @@
 
 # python
 __pycache__/
+
+# testing and comments
 test.txt
+*_viv.*
+testing/
+testing_*

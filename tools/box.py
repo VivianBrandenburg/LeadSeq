@@ -1,8 +1,94 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import pandas as pd
+import textwrap
 
 
+
+# =============================================================================
+# sequence handling
+# =============================================================================
+
+
+reverse_tab = str.maketrans("ACUG", "UGAC")
+def reverse_complement(seq):
+    return seq.translate(reverse_tab)[::-1]
+
+
+def TU_converter(seq):
+    if seq[:1000].find('U') == -1:
+        return seq.replace('T', 'U')
+    if seq[:1000].find('T') == -1:
+        return seq.replace('U', 'T')
+
+# =============================================================================
+# general data reads
+# =============================================================================
+
+def read_gff(INF):
+    gff_fields = ['seqname' ,'source', 'feature', 'start', 'end', 'score', 'strand', 'frame' , 'attribute']
+    gff = pd.read_table(INF, comment='#', names = gff_fields)
+    return gff
+
+
+def read_fna(INF, convert_TU=False):
+    with open(INF) as inf:
+        fna = inf.read().strip()
+        fna = [x.split('\n')  for x in fna.split('>') if x]
+                
+        fna = {x[0].split(' ')[0]:''.join(x[1:]) for x in fna}
+        if convert_TU:
+            return {key:TU_converter(value) for key, value in fna.items()}
+    return fna
+
+    
+# =============================================================================
+# convert to transcriptome
+# =============================================================================
+
+def get_attrtibutes(att):
+    att = [x.split('=') for x in att.split(';')]
+    return {x[0]:x[1] for x in att}
+
+def genome2transcript(genome, gff, feature='CDS' ,gene_ids='locus_tag'):
+    gff = gff[gff.feature==feature]
+    res = {}
+    for i in gff.index:
+        gene = gff.loc[i]
+        
+        seqname = gene.seqname
+        if seqname not in genome.keys(): raise KeyError('sequence names in gff are not present in fasta-file')
+        seq = genome[seqname]
+        
+        transcript = seq[gene.start:gene.end+1]
+        if not transcript:
+            print('\nABORTING: gff and length of genome/scores do not match\n')
+            return res
+                        
+        if type(transcript[0]) == int or float  and  gene.strand == '-':
+                transcript = transcript[::-1]
+            
+        elif type(transcript[0]) == str and  gene.strand == '-':
+            transcript = reverse_complement(transcript)
+       
+        attributes = get_attrtibutes(gene.attribute)
+        name = attributes[gene_ids]
+        
+        res[name]=transcript
+    return res
+
+
+def write_transcriptome(inDic, outFile):
+    with open (outFile, "w") as outf:
+        for key, value in inDic.items():
+            value_wrap = [value[i:i+80] for i in range(0, len(value), 80)]
+            outf.write('\n'.join(['>'+key] + value_wrap )+ '\n')
+
+
+# =============================================================================
+# lead-scores read/write   
+# =============================================================================
 
 def read_scores(infile):
     with open(infile, 'r') as inf:
