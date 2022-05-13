@@ -6,8 +6,8 @@ from scipy.stats import mannwhitneyu
 
 # filter out transcripts which have not more then 10 informative lead-scores
 def filter_scores(scores):
-    scores = [x for x in scores if x>0.5]
-    return len(scores)>10
+    scores = [x for x in scores if x>0.1]
+    return len(scores)>3
     
  
     

@@ -5,8 +5,13 @@ from tools.box import read_scores, write_scores
 from tools.mwu import filter_scores, compare_with_mwu
 
 # data
-INF_l25, INF_l37 =  sys.argv[1], sys.argv[2]
-OUTF_delta, OUTF_mwu = sys.argv[3], sys.argv[4]
+# INF_l25, INF_l37 =  sys.argv[1], sys.argv[2]
+# OUTF_delta, OUTF_mwu = sys.argv[3], sys.argv[4]
+
+INF_l25, INF_l37 =  'results/l25.txt', 'results/l37.txt'
+OUTF_delta, OUTF_mwu = 'results/delta.txt', 'results/mwu.txt'
+
+
 
 # read in data
 l25 = read_scores(INF_l25)
@@ -32,8 +37,8 @@ for key, value in lead_delta.items():
     corr_dic[key], pval_dic[key] =  compare_with_mwu(value, winSize, ends)
 
 # write results
-write_scores(pval_dic, OUTF_delta)
-write_scores(lead_delta, OUTF_mwu)
+write_scores(pval_dic, OUTF_mwu)
+write_scores(lead_delta, OUTF_delta)
   
 
 

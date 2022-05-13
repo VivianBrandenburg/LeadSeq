@@ -6,9 +6,13 @@ from tools.box import read_scores, read_UTR_file, get_SDS
 from tools.plots import plot_SDS
 
 
-INF_delta, INF_mwu = sys.argv[1], sys.argv[2]
-INF_5UTR =sys.argv[3]
-OUTF = sys.argv[4]
+# INF_delta, INF_mwu = sys.argv[1], sys.argv[2]
+# INF_5UTR =sys.argv[3]
+# OUTF = sys.argv[4]
+
+INF_delta, INF_mwu = 'results/delta.txt', 'results/mwu.txt'
+INF_5UTR = 'data/5UTR_annotation.txt'
+OUTF = 'results/SDS.csv'
 
 
 # read in data
